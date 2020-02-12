@@ -24,12 +24,7 @@ apps:
       - unity7
       - audio-playback
     slots:
-      - ncspot-mpris
-
-slots:
-  ncspot-mpris:
-    interface: mpris
-    name: ncspot
+      - mpris
 
 parts:
   ncspot:
