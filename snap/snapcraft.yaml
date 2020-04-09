@@ -30,7 +30,7 @@ parts:
   ncspot:
     plugin: rust
     source: https://github.com/hrkfdn/ncspot.git
-    source-tag: $SNAPCRAFT_PROJECT_VERSION
+    source-tag: v$SNAPCRAFT_PROJECT_VERSION
     build-packages:
       - libasound2-dev
       - libncurses-dev
