@@ -17,6 +17,7 @@ apps:
     environment:
       LD_LIBRARY_PATH: "$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio:$LD_LIBRARY_PATH"
       LC_ALL: "C.UTF-8"
+      TERM: "screen-256color"
     command: ncspot
     plugs:
       - network
