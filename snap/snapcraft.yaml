@@ -1,6 +1,6 @@
 name: ncspot
 base: core18
-version: '0.2.5'
+adopt-info: ncspot
 summary: Cross-platform ncurses Spotify client written in Rust
 description: |
   ncurses Spotify client written in Rust using librespot. It is heavily 
