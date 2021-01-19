@@ -15,7 +15,7 @@ confinement: strict
 apps:
   ncspot:
     environment:
-      LD_LIBRARY_PATH: "$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio:$LD_LIBRARY_PATH"
+      LD_LIBRARY_PATH: "$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio"
       LC_ALL: "C.UTF-8"
     command: ncspot
     plugs:
