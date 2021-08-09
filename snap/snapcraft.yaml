@@ -22,7 +22,7 @@ apps:
       - network
       - network-bind
       - unity7
-      - audio-playback
+      - pulseaudio
     slots:
       - mpris
 
