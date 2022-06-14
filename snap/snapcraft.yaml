@@ -59,6 +59,7 @@ parts:
       - libxcb-render0-dev
       - libxcb-shape0-dev
       - libxcb-xfixes0-dev
+      - musl-tools
     stage-packages:
       - libpulse0
       - libncursesw5
