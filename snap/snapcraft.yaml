@@ -18,6 +18,11 @@ layout:
   /usr/share/alsa:
     bind: $SNAP/usr/share/alsa
 
+architectures:
+  - build-on: amd64
+  - build-on: arm64
+  - build-on: armhf
+
 apps:
   ncspot:
     environment:
