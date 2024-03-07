@@ -1,5 +1,5 @@
 name: ncspot
-base: core20
+base: core22
 adopt-info: ncspot
 summary: Cross-platform ncurses Spotify client written in Rust
 description: |
@@ -96,6 +96,7 @@ parts:
         snapcraftctl set-version "$(git rev-parse --short HEAD)"
       fi
     build-packages:
+      - cargo
       - libasound2-dev
       - libncurses-dev
       - libncursesw5-dev
@@ -118,7 +119,7 @@ parts:
       - libgpg-error0
       - liblz4-1
       - liblzma5
-      - libssl1.1
+      - libssl3
       - libsystemd0
       - libtinfo5
       - libxcb-render0
