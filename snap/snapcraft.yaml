@@ -61,7 +61,7 @@ parts:
     source: https://github.com/hrkfdn/ncspot.git
     override-pull: |
       snapcraftctl pull
-      last_committed_tag="$(git tag -l --sort=version:refname | tail -n 1 | tr -d 'v')"
+      last_committed_tag="$(git tag -l --sort=version:refname | tail -n 1)"
       echo $last_committed_tag
       last_released_tag="$(snap info $SNAPCRAFT_PROJECT_NAME | awk '$1 == "latest/beta:" { print $2 }')"
       echo $last_released_tag
