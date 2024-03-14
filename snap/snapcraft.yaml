@@ -69,7 +69,7 @@ parts:
       # beta, build that tag instead of master.
       if [ "${last_committed_tag}" != "${last_released_tag}" ]; then
         git fetch
-        git checkout "v${last_committed_tag}"
+        git checkout "${last_committed_tag}"
         echo "Setting version to $last_committed_tag"
         snapcraftctl set-version "$(echo $last_committed_tag)"
       else
