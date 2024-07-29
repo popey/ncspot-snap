@@ -59,7 +59,6 @@ parts:
     after: [alsa-mixin]
     plugin: rust
     source: https://github.com/hrkfdn/ncspot/archive/refs/tags/v$SNAPCRAFT_PROJECT_VERSION.tar.gz
-    source-tag: 
     build-packages:
       - cargo
       - libasound2-dev
