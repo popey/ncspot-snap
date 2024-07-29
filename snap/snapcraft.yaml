@@ -1,6 +1,6 @@
 name: ncspot
 base: core22
-adopt-info: ncspot
+version: 1.1.2
 summary: Cross-platform ncurses Spotify client written in Rust
 description: |
   ncurses Spotify client written in Rust using librespot. It is heavily 
@@ -58,24 +58,8 @@ parts:
   ncspot:
     after: [alsa-mixin]
     plugin: rust
-    source: https://github.com/hrkfdn/ncspot.git
-    override-pull: |
-      snapcraftctl pull
-      last_committed_tag="$(git tag -l --sort=version:refname | tail -n 1)"
-      echo $last_committed_tag
-      last_released_tag="$(snap info $SNAPCRAFT_PROJECT_NAME | awk '$1 == "latest/beta:" { print $2 }')"
-      echo $last_released_tag
-      # If the latest tag from the upstream project has not been released to
-      # beta, build that tag instead of master.
-      if [ "${last_committed_tag}" != "${last_released_tag}" ]; then
-        git fetch
-        git checkout "${last_committed_tag}"
-        echo "Setting version to $last_committed_tag"
-        snapcraftctl set-version "$(echo $last_committed_tag)"
-      else
-        echo "Setting version to $(git rev-parse --short HEAD)"
-        snapcraftctl set-version "$(git rev-parse --short HEAD)"
-      fi
+    source: https://github.com/hrkfdn/ncspot/archive/refs/tags/v$SNAPCRAFT_PROJECT_VERSION.tar.gz
+    source-tag: 
     build-packages:
       - cargo
       - libasound2-dev
