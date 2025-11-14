@@ -1,3 +1,25 @@
 #!/bin/bash
 cd "$SNAP_USER_COMMON"
-$SNAP/bin/ncspot -b .
+
+# Pre-create cache directories to avoid first-run issues
+mkdir -p .cache/librespot/files
+mkdir -p .cache/librespot/volume
+mkdir -p .config
+
+# Manually set PULSE_SERVER if not already set
+# This fixes the first-run crash by ensuring PulseAudio socket is accessible
+if [ -z "$PULSE_SERVER" ]; then
+  # Try multiple possible socket locations
+  for sockpath in \
+    "/run/user/$(id -u)/pulse/native" \
+    "$XDG_RUNTIME_DIR/../pulse/native" \
+    "$XDG_RUNTIME_DIR/pulse/native"
+  do
+    if [ -S "$sockpath" ]; then
+      export PULSE_SERVER="unix:${sockpath}"
+      break
+    fi
+  done
+fi
+
+exec $SNAP/bin/ncspot -b .
