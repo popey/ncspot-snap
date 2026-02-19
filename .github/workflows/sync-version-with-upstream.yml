@@ -1,32 +1,66 @@
-name: Update
+name: 🔄 Sync version with upstream
 
 on:
-  # Runs at 10:00 UTC every day
   schedule:
-    - cron:  '0 10 * * *'
-  # Allows you to run this workflow manually from the Actions tab
+    - cron: '0 10 * * *'
   workflow_dispatch:
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
-  sync:
-    name: 🔄 Sync version with upstream
-    # environment: "Candidate Branch"
+  sync-version:
     runs-on: ubuntu-latest
     steps:
-      - name: 🔄 Sync version with upstream
-        uses: snapcrafters/ci/sync-version@main
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          branch: master
-          bot-email: alan@popey.com
-          bot-name: popeybot
-          update-script: |
-            VERSION=$(
-              curl -sL https://api.github.com/repos/hrkfdn/ncspot/releases | 
-              jq .  | grep tag_name | grep -v beta | head -n 1 | cut -d'"' -f4 | tr -d 'v'
-            )
-            sed -i 's/^\(version: \).*$/\1'"$VERSION"'/' snap/snapcraft.yaml
+
+      - name: Get latest version from upstream
+        id: latest
+        run: |
+          LATEST_VERSION=$(curl -sL https://api.github.com/repos/hrkfdn/ncspot/releases/latest | jq -r '.tag_name' | tr -d 'v')
+          echo "version=$LATEST_VERSION" >> $GITHUB_OUTPUT
+          echo "Latest upstream version: $LATEST_VERSION"
+
+      - name: Get current version from snapcraft.yaml
+        id: current
+        run: |
+          CURRENT_VERSION=$(grep "^version:" snap/snapcraft.yaml | head -1 | sed "s/version: *['\"]\{0,1\}\(.*\)['\"]\{0,1\}/\1/" | sed "s/['\"]//g")
+          echo "version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          echo "Current snap version: $CURRENT_VERSION"
+
+      - name: Compare versions
+        id: compare
+        run: |
+          if [ "${{ steps.latest.outputs.version }}" != "${{ steps.current.outputs.version }}" ]; then
+            echo "needs_update=true" >> $GITHUB_OUTPUT
+            echo "Version mismatch - update needed"
+          else
+            echo "needs_update=false" >> $GITHUB_OUTPUT
+            echo "Versions match - no update needed"
+          fi
+
+      - name: Update snapcraft.yaml
+        if: steps.compare.outputs.needs_update == 'true'
+        run: |
+          sed -i "s/^version: .*/version: '${{ steps.latest.outputs.version }}'/" snap/snapcraft.yaml
+
+      - name: Create Pull Request
+        if: steps.compare.outputs.needs_update == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Update to ${{ steps.latest.outputs.version }}"
+          title: "Update to ${{ steps.latest.outputs.version }}"
+          body: |
+            Automated version update from upstream.
+
+            - Previous: `${{ steps.current.outputs.version }}`
+            - New: `${{ steps.latest.outputs.version }}`
+
+            [Upstream release](https://github.com/hrkfdn/ncspot/releases/tag/${{ steps.latest.outputs.version }})
+          branch: auto-update-${{ steps.latest.outputs.version }}
+          delete-branch: true
