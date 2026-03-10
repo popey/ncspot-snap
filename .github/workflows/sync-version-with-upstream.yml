@@ -20,8 +20,14 @@ jobs:
 
       - name: Get latest version from upstream
         id: latest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          LATEST_VERSION=$(curl -sL https://api.github.com/repos/hrkfdn/ncspot/releases/latest | jq -r '.tag_name' | tr -d 'v')
+          LATEST_VERSION=$(gh release view --repo hrkfdn/ncspot --json tagName -q '.tagName' | tr -d 'v')
+          if [ -z "$LATEST_VERSION" ] || [ "$LATEST_VERSION" = "null" ]; then
+            echo "::error::Failed to fetch latest version from GitHub API"
+            exit 1
+          fi
           echo "version=$LATEST_VERSION" >> $GITHUB_OUTPUT
           echo "Latest upstream version: $LATEST_VERSION"
 
