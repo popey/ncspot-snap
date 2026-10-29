@@ -22,4 +22,4 @@ if [ -z "$PULSE_SERVER" ]; then
   done
 fi
 
-exec $SNAP/bin/ncspot -b .
+exec "$SNAP/bin/ncspot" -b . "$@"
